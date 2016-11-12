@@ -2,8 +2,8 @@
 This is our project for CS 4701 – Artificial Intelligence (Practicum)
 
 ## Members
-Michael Wagner (msw269)
-Jonathan "Jake" Byman (jsb396)
+- Michael Wagner (msw269)
+- Jonathan "Jake" Byman (jsb396)
 
 # Deployment
 1. git checkout -b my_branch_name
