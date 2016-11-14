@@ -1,2 +1,5 @@
 build.fxbuild
 .DS_Store
+.metadata
+.project
+
