@@ -1,41 +1,86 @@
 package creature;
 
-public abstract class Creature {
-	
-	public enum EvolutionTrack{
-		CAT, TRUNK, BIRD, HUMAN, TECH, PLANT, GEO
-	}
-	
-	public enum Direction{
-		UP, DOWN, LEFT, RIGHT
-	}
-	
-	public void evolve(){
-		return;
-	}
-	public EvolutionTrack evolutionTrack;
-	public int evolutionStage;
-	public int amountDNA;
-	public int x;
-	public int y;
+import board.EvolutionTrack;
+import javafx.scene.image.Image;
 
+public class Creature {
+	
+	private EvolutionTrack evolutionTrack;
+	private int evolutionStage;
+	private int amountDNA;
+	private int x;
+	private int y;
+	private String spritePathName;
+	private Image sprite;
+	
+	// Constructor to create a creature of a given type
+	public Creature(EvolutionTrack type){
+		this.x = 0;
+		this.y = 0;
+		this.evolutionStage = 0;
+		this.amountDNA = 0;
+		this.evolutionTrack = type;
+		this.spritePathName = "file:assets/png/" + type.toString() + evolutionStage + ".png";
+		this.sprite = new Image(this.spritePathName, true);
+	}
+
+	// Function to move the creature in a given direction
 	public void move(Direction d){
 		if(d == Direction.UP){
-			//if(y < stageMax)
-				y++;
+			y++;
 		}
 		if(d == Direction.DOWN){
-			if( y > 0)
-				y--;
+			y--;
 		}
 		if(d == Direction.LEFT){
-			if(x > 0)
-				x--;
+			x--;
 		}
 		if(d == Direction.RIGHT){
-			//if(x < stageMax)
-				x++;
+			x++;
 		}
+	}
+	
+	// Function to be called when the creature evolves
+	public void evolve(){
+		this.evolutionStage++;
+		
+		// If this creature has reached its maximum point of evolution, stop
+		if(evolutionStage > 3){
+			return;
+		}
+		
+		this.spritePathName = "file:assets/png/" + this.evolutionTrack.toString() + evolutionStage + ".png";
+		this.sprite = new Image(this.spritePathName, true);
+	}
+	
+	// Getter for this creature's current level of DNA
+	public int getDNA(){
+		return amountDNA;
+	}
+	
+	// Function to be called when a creature ingests DNA
+	public void consumedDNA(){
+		this.amountDNA += 10;
+	}
+	
+	// Getter for sprite
+	public Image getImage(){
+		return sprite;
+	}
+	
+	// Getter for evolution track
+	public EvolutionTrack getEvolutionTrack(){
+		return this.evolutionTrack;
+	}
+	
+	// Getter for x coordinate
+	public int getX(){
+		return x;
+	}
+	
+	// Getter for y coordinate
+	public int getY(){
+		return y;
 	}
 
 }
