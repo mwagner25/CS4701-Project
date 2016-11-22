@@ -10,24 +10,47 @@ public class QuadTree {
 		this.root = new QuadTreeNode();
 	}
 	
-	public void insertNodeLeft(Tile t){
-		this.root.left = new QuadTreeNode();
-		this.root.left.setValue(t);
+	public void insertNodeLeft(QuadTreeNode node, Tile t){
+		if(node != null){
+			this.insertNodeLeft(node.left, t);
+		}
+		else{
+			root = new QuadTreeNode();
+			root.setValue(t);
+		}
 	}
 	
-	public void insertNodeRight(Tile t){
-		this.root.right = new QuadTreeNode();
-		this.root.right.setValue(t);
+	public void insertNodeRight(QuadTreeNode node, Tile t){
+		if(node != null){
+			this.insertNodeRight(node.right, t);
+		}
+		else{
+			root = new QuadTreeNode();
+			root.setValue(t);
+		}
+		
 	}
 	
-	public void insertNodeUp(Tile t){
-		this.root.up = new QuadTreeNode();
-		this.root.up.setValue(t);
+	public void insertNodeUp(QuadTreeNode node, Tile t){
+		if(node != null){
+			this.insertNodeUp(node.up, t);
+		}
+		else{
+			root = new QuadTreeNode();
+			root.setValue(t);
+		}
+		
 	}
 	
-	public void insertNodeDown(Tile t){
-		this.root.down = new QuadTreeNode();
-		this.root.down.setValue(t);
+	public void insertNodeDown(QuadTreeNode node, Tile t){
+		if(node != null){
+			this.insertNodeDown(node.down, t);
+		}
+		else{
+			root = new QuadTreeNode();
+			root.setValue(t);
+		}
+		
 	}
 
 }

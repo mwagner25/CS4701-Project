@@ -57,6 +57,7 @@ public class Main extends Application {
 			Grid.addCreature(c, 0, 0);
 			
 			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+				
 				 Direction d = GameState.nextBestMove(c);
 				 System.out.println(d);
 				 c.move(d);
@@ -86,7 +87,6 @@ public class Main extends Application {
 				Grid.addCreature(c, randX, randY);
 			}
 			else{
-				System.out.println(i);
 				i--;
 			}
 		}

@@ -79,7 +79,7 @@ public class Creature {
 		this.amountDNA += d.getValue();
 		
 		if(amountDNA > 10 * (this.evolutionStage + 1)){
-			this.evolve();
+			// this.evolve();
 		}
 	}
 	
