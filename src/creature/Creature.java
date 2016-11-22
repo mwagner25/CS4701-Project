@@ -37,17 +37,17 @@ public class Creature {
 
 	// Function to move the creature in a given direction
 	public void move(Direction d){
-		if(d == Direction.RIGHT && y < Grid.tiles[0].length){
+		if(d == Direction.RIGHT && x < Grid.tiles[0].length - 1){
 			x++;
 		}
 		if(d == Direction.UP && y > 0){
 			y--;
 		}
 		
-		if(d == Direction.LEFT && x >= 0){
+		if(d == Direction.LEFT && x > 0){
 			x--;
 		}
-		if(d == Direction.DOWN && x < Grid.tiles.length - 1){
+		if(d == Direction.DOWN && y < Grid.tiles.length - 1){
 			y++;
 		}
 	}
@@ -70,9 +70,17 @@ public class Creature {
 		return amountDNA;
 	}
 	
+	public int getEvolutionStage(){
+		return this.evolutionStage;
+	}
+	
 	// Function to be called when a creature ingests DNA
-	public void consumedDNA(){
-		this.amountDNA += 10;
+	public void consumedDNA(DNA d){
+		this.amountDNA += d.getValue();
+		
+		if(amountDNA > 10 * (this.evolutionStage + 1)){
+			this.evolve();
+		}
 	}
 	
 	// Getter for sprite

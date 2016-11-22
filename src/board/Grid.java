@@ -1,6 +1,7 @@
 package board;
 
 import creature.Creature;
+import creature.DNA;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 
@@ -64,6 +65,10 @@ public class Grid {
 		Grid.tiles[x][y].setCreature(c);
 	}
 	
+	public static void addDNA(DNA d, int x, int y){
+		Grid.tiles[x][y].setDNA(d);
+	}
+	
 	/*
 	 * Getter to return the grid
 	 * 
@@ -90,9 +95,13 @@ public class Grid {
 					
 					// Inconsistency
 					if(xCoord != x || yCoord != y){
-						System.out.println("INCONSISTENCY FOUND!!!!!");
-						System.out.println(c);
 						Tile nextTile = tiles[xCoord][yCoord];
+						
+						if(nextTile.getDNA() != null){
+							nextTile.clearTile();
+							c.consumedDNA(nextTile.getDNA());
+						}
+						
 						nextTile.setCreature(c);
 						oldTile.clearTile();
 					}

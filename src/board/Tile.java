@@ -1,6 +1,7 @@
 package board;
 
 import creature.Creature;
+import creature.DNA;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -13,6 +14,7 @@ public class Tile extends StackPane{
 	private ImageView img;
 	private double width;
 	private double height;
+	private DNA dna;
 	
 	// Construct a tile of a given width and height
 	public Tile(double width, double height){
@@ -26,6 +28,7 @@ public class Tile extends StackPane{
 		setAlignment(Pos.CENTER);
 		getChildren().addAll(border);
 		this.creature = null;
+		this.dna = null;
 	}
 	
 	// Construct a tile with a creature initially in it
@@ -48,6 +51,19 @@ public class Tile extends StackPane{
 	// Getter for Creature object
 	public Creature getCreature(){
 		return this.creature;
+	}
+	
+	public DNA getDNA(){
+		return this.dna;
+	}
+	
+	public void setDNA(DNA d){
+		this.dna = d;
+		this.img = new ImageView(d.getImage());
+		this.img.setFitWidth(0.5 * this.width);
+		this.img.setFitHeight(0.5 * this.height);
+		
+		this.getChildren().add(img);
 	}
 	
 	// Change the Creature for this tile

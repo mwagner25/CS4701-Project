@@ -33,18 +33,18 @@ public class Main extends Application {
 			// Create grid
 			Grid.screenWidth = width;
 			Grid.screenHeight = height;
-			int gridHeight = 5;
-			int gridWidth = 5;
+			int gridHeight = 3;
+			int gridWidth = 3;
 			
 			final Grid grid = new Grid(gridHeight, gridWidth);
 			
 			// GameState variables
 			ArrayList<Creature> creatures = new ArrayList<Creature>();	
-			GameState.grid = grid;
 			GameState.creatures = creatures;
 			
 			// Populate the grid
-			addRandomCreatures(10);
+			addRandomCreatures(2);
+			addRandomDNA(3);
 			
 			// Render scene
 			Scene scene = new Scene(grid.getGrid(), width, height);
@@ -57,7 +57,9 @@ public class Main extends Application {
 			Grid.addCreature(c, 0, 0);
 			
 			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
-				 c.move(Direction.DOWN);
+				 Direction d = GameState.nextBestMove(c);
+				 System.out.println(d);
+				 c.move(d);
 				 Grid.refresh();
 			 }));
 		    timeline.setCycleCount(Animation.INDEFINITE);
@@ -76,10 +78,33 @@ public class Main extends Application {
 	private void addRandomCreatures(int n){
 		for(int i = 0; i < n; i++){
 			// Insert the creature at a random point in the grid
-			int randX = (int) (Math.random() * Grid.getTiles()[0].length);
-			int randY = (int) (Math.random() * Grid.getTiles().length);
-			Creature c = new Creature(EvolutionTrack.ROCK, randX, randY);
-			Grid.addCreature(c, randX, randY);
+			int randX = (int) (Math.random() * Grid.tiles[0].length);
+			int randY = (int) (Math.random() * Grid.tiles.length);
+			
+			if(Grid.tiles[randX][randY].getDNA() == null){
+				Creature c = new Creature(EvolutionTrack.ROCK, randX, randY);
+				Grid.addCreature(c, randX, randY);
+			}
+			else{
+				System.out.println(i);
+				i--;
+			}
+		}
+	}
+	
+	private void addRandomDNA(int n){
+		for(int i = 0; i < n; i++){
+			int randX = (int) (Math.random() * Grid.tiles[0].length);
+			int randY = (int) (Math.random() * Grid.tiles.length);
+			
+			if(Grid.tiles[randX][randY].getCreature() == null){
+				DNA dna = new DNA(randX, randY, 10);
+				Grid.addDNA(dna, randX, randY);
+			}
+			else{
+				i--;
+			}
+			
 		}
 	}
 }
