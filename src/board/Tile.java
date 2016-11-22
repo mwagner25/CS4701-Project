@@ -47,7 +47,7 @@ public class Tile extends StackPane{
 	
 	// Getter for Creature object
 	public Creature getCreature(){
-		return creature;
+		return this.creature;
 	}
 	
 	// Change the Creature for this tile
@@ -58,6 +58,11 @@ public class Tile extends StackPane{
 		this.img.setFitHeight(0.5 * this.height);
 		
 		this.getChildren().add(img);
+	}
+	
+	public void clearTile(){
+		this.getChildren().remove(this.img);
+		this.creature = null;
 	}
 	
 	// Getter for tile height

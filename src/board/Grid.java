@@ -13,7 +13,7 @@ public class Grid {
 	// Variable to represent the grid
 	private Pane grid;
 	
-	private Tile[][] tiles;
+	public static Tile[][] tiles;
 	
 	/*
 	 * Constructor to create a grid with a specified number of
@@ -24,7 +24,7 @@ public class Grid {
 	 * 
 	 * */
 	public Grid(int rows, int columns){
-		this.tiles = new Tile[rows][columns];
+		Grid.tiles = new Tile[rows][columns];
 		this.grid = (Pane) generateGrid(rows, columns);
 	}
 	
@@ -37,7 +37,7 @@ public class Grid {
 	 * 
 	 * @returns the Pane object
 	 * */
-	private Parent generateGrid(int rows, int columns){
+	public static Parent generateGrid(int rows, int columns){
 		Pane root = new Pane();
 		root.setPrefSize(Grid.screenWidth, Grid.screenHeight);
 		
@@ -48,7 +48,7 @@ public class Grid {
 		for(int i = 0; i < rows; i++){
 			for(int g = 0; g < columns; g++){
 				Tile t = new Tile(tileWidth, tileHeight);
-				this.tiles[i][g] = t;
+				Grid.tiles[g][i] = t;
 				
 				t.setTranslateX(g * tileWidth);
 				t.setTranslateY(i * tileHeight);
@@ -60,8 +60,8 @@ public class Grid {
 		return root;
 	}
 	
-	public void addCreature(Creature c, int x, int y){
-		this.tiles[x][y].setCreature(c);
+	public static void addCreature(Creature c, int x, int y){
+		Grid.tiles[x][y].setCreature(c);
 	}
 	
 	/*
@@ -75,8 +75,30 @@ public class Grid {
 	/*
 	 * Getter to return the tiles on the grid
 	 */
-	public Tile[][] getTiles(){
-		return this.tiles;
+	public static Tile[][] getTiles(){
+		return Grid.tiles;
+	}
+	
+	public static void refresh(){
+		for(int x = 0; x < tiles[0].length; x++){
+			for(int y = 0; y < tiles.length; y++){
+				Tile oldTile = Grid.tiles[x][y];
+				Creature c = oldTile.getCreature();
+				if(c != null){
+					int xCoord = c.getX();
+					int yCoord = c.getY();
+					
+					// Inconsistency
+					if(xCoord != x || yCoord != y){
+						System.out.println("INCONSISTENCY FOUND!!!!!");
+						System.out.println(c);
+						Tile nextTile = tiles[xCoord][yCoord];
+						nextTile.setCreature(c);
+						oldTile.clearTile();
+					}
+				}
+			}
+		}
 	}
 
 }

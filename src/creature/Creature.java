@@ -1,6 +1,7 @@
 package creature;
 
 import board.EvolutionTrack;
+import board.Grid;
 import javafx.scene.image.Image;
 
 public class Creature {
@@ -23,20 +24,31 @@ public class Creature {
 		this.spritePathName = "file:assets/png/" + type.toString() + evolutionStage + ".png";
 		this.sprite = new Image(this.spritePathName, true);
 	}
+	
+	public Creature(EvolutionTrack type, int x, int y){
+		this.x = x;
+		this.y = y;
+		this.evolutionStage = 0;
+		this.amountDNA = 0;
+		this.evolutionTrack = type;
+		this.spritePathName = "file:assets/png/" + type.toString() + evolutionStage + ".png";
+		this.sprite = new Image(this.spritePathName, true);
+	}
 
 	// Function to move the creature in a given direction
 	public void move(Direction d){
-		if(d == Direction.UP){
-			y++;
+		if(d == Direction.RIGHT && y < Grid.tiles[0].length){
+			x++;
 		}
-		if(d == Direction.DOWN){
+		if(d == Direction.UP && y > 0){
 			y--;
 		}
-		if(d == Direction.LEFT){
+		
+		if(d == Direction.LEFT && x >= 0){
 			x--;
 		}
-		if(d == Direction.RIGHT){
-			x++;
+		if(d == Direction.DOWN && x < Grid.tiles.length - 1){
+			y++;
 		}
 	}
 	

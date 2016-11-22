@@ -2,12 +2,21 @@ package application;
 	
 import javafx.geometry.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import board.EvolutionTrack;
 import board.GameState;
 import board.Grid;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.scene.Scene;
 import creature.*;
 
@@ -16,7 +25,6 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-		
 			// Get screen width
 			Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 			double width = primaryScreenBounds.getWidth();
@@ -25,10 +33,10 @@ public class Main extends Application {
 			// Create grid
 			Grid.screenWidth = width;
 			Grid.screenHeight = height;
-			int gridHeight = 30;
-			int gridWidth = 30;
+			int gridHeight = 5;
+			int gridWidth = 5;
 			
-			Grid grid = new Grid(gridHeight, gridWidth);
+			final Grid grid = new Grid(gridHeight, gridWidth);
 			
 			// GameState variables
 			ArrayList<Creature> creatures = new ArrayList<Creature>();	
@@ -44,6 +52,17 @@ public class Main extends Application {
 			primaryStage.setTitle("Darwin's Nightmare");
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
+			
+			final Creature c = new Creature(EvolutionTrack.CAT);
+			Grid.addCreature(c, 0, 0);
+			
+			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+				 c.move(Direction.DOWN);
+				 Grid.refresh();
+			 }));
+		    timeline.setCycleCount(Animation.INDEFINITE);
+		    timeline.play();
+			
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -56,12 +75,11 @@ public class Main extends Application {
 	
 	private void addRandomCreatures(int n){
 		for(int i = 0; i < n; i++){
-			Creature c = new Creature(EvolutionTrack.ROCK);
-			
 			// Insert the creature at a random point in the grid
-			int randX = (int) (Math.random() * GameState.grid.getTiles().length);
-			int randY = (int) (Math.random() * GameState.grid.getTiles()[0].length);
-			GameState.grid.addCreature(c, randX, randY);
+			int randX = (int) (Math.random() * Grid.getTiles()[0].length);
+			int randY = (int) (Math.random() * Grid.getTiles().length);
+			Creature c = new Creature(EvolutionTrack.ROCK, randX, randY);
+			Grid.addCreature(c, randX, randY);
 		}
 	}
 }
