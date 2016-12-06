@@ -48,7 +48,7 @@ public class Grid {
 		
 		for(int i = 0; i < rows; i++){
 			for(int g = 0; g < columns; g++){
-				Tile t = new Tile(tileWidth, tileHeight);
+				Tile t = new Tile(tileWidth, tileHeight, i , g);
 				Grid.tiles[g][i] = t;
 				
 				t.setTranslateX(g * tileWidth);
@@ -98,8 +98,9 @@ public class Grid {
 						Tile nextTile = tiles[xCoord][yCoord];
 						
 						if(nextTile.getDNA() != null){
-							nextTile.clearTile();
 							c.consumedDNA(nextTile.getDNA());
+							nextTile.clearTile();
+							
 						}
 						
 						nextTile.setCreature(c);

@@ -75,8 +75,8 @@ public class Main extends Application {
 		// Create grid
 		Grid.screenWidth = width;
 		Grid.screenHeight = height;
-		int gridHeight = 10;
-		int gridWidth = 10;
+		int gridHeight = 5;
+		int gridWidth = 5;
 		
 		final Grid grid = new Grid(gridHeight, gridWidth);
 					
@@ -85,10 +85,15 @@ public class Main extends Application {
 		GameState.creatures = creatures;
 		
 		// Populate the grid
-		addRandomCreatures(2);
-		addRandomDNA(3);
+		addRandomCreatures(0);
+		addRandomDNA(1);
 		
 		// Render scene
+//		DNA dna = new DNA(0, 2, 10);
+//		DNA dna2 = new DNA(1, 2, 10);
+//		Grid.addDNA(dna2, 1, 2);
+//		Grid.addDNA(dna, 0, 2);
+		
 		Scene scene = new Scene(grid.getGrid(), width, height);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setTitle("Darwin's Nightmare");
@@ -100,7 +105,7 @@ public class Main extends Application {
 		
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), ev -> {
 			 Direction d = GameState.nextBestMove(c);
-			 System.out.println(d);
+			// System.out.println(d);
 			 c.move(d);
 			 Grid.refresh();
 		 }));
