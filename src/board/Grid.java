@@ -10,7 +10,6 @@ public class Grid {
 	public static double screenWidth;
 	public static double screenHeight;
 	
-	
 	// Variable to represent the grid
 	private Pane grid;
 	
@@ -48,7 +47,7 @@ public class Grid {
 		
 		for(int i = 0; i < rows; i++){
 			for(int g = 0; g < columns; g++){
-				Tile t = new Tile(tileWidth, tileHeight, i , g);
+				Tile t = new Tile(tileWidth, tileHeight);
 				Grid.tiles[g][i] = t;
 				
 				t.setTranslateX(g * tileWidth);
