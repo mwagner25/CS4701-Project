@@ -11,6 +11,7 @@ public class QuadTreeNode {
 	public QuadTreeNode up;
 	public QuadTreeNode down;
 	public boolean visited;
+	public boolean explored;
 	
 	private Tile value;
 	
@@ -20,6 +21,7 @@ public class QuadTreeNode {
 		this.up = null;
 		this.down = null;
 		this.visited = false;
+		this.explored = false;
 	}
 	
 	public List<QuadTreeNode> getChildren(){

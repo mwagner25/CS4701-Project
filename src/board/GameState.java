@@ -1,12 +1,12 @@
 package board;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import creature.*;
 import quadtree.QuadTree;
 import quadtree.QuadTreeNode;
+import board.Coordinate;
 
 public class GameState {
 	
@@ -17,54 +17,66 @@ public class GameState {
 	// the tree based on the creature coordinates
 	public static QuadTree generateQuadTree(Creature c){
 		QuadTree state = new QuadTree();
-		ArrayList<QuadTreeNode> seen = new ArrayList<QuadTreeNode>();
+		List<String> seen = new ArrayList<String>();
 		
 		int xCoord = c.getX();
 		int yCoord = c.getY();
-		seen.add(state.root);
-		state.root.setValue(Grid.tiles[xCoord][yCoord]);
-		generate(9, state.root, state, seen, xCoord, yCoord);
+		generate(8, state.root, state, seen, xCoord, yCoord);
 	
 		return state;
 	}
 	
 	// Recursive algorithm to generate the tree
-	public static void generate(int depth, QuadTreeNode current, QuadTree tree, List<QuadTreeNode> seen, int xPosition, int yPosition){
+	public static void generate(int depth, QuadTreeNode current, QuadTree tree, List<String> seen, int xPosition, int yPosition){
 		if(depth == -1){
 			return;
 		}
 		
+		boolean canMoveLeft = xPosition - 1 >= 0;
+		boolean canMoveRight = xPosition + 1 < Grid.tiles[0].length;
+		boolean canMoveDown = yPosition + 1 < Grid.tiles.length;
+		boolean canMoveUp = yPosition - 1 >= 0;
+		boolean canMove = canMoveLeft || canMoveRight || canMoveDown || canMoveUp;
+		
 		// If left available
-		if(xPosition - 1 >= 0){
+		if(canMoveLeft){
 			tree.insertNodeLeft(current, Grid.tiles[xPosition - 1][yPosition]);
-			seen.add(current);
+			canMove = true;
 		}
 		
 		//If right available
-		if(xPosition + 1 < Grid.tiles[0].length){
+		if(canMoveRight){
 			tree.insertNodeRight(current, Grid.tiles[xPosition + 1][yPosition]);
-			seen.add(current);
+			canMove = true;
 		}
 		
 		// If down available
-		if(yPosition + 1 < Grid.tiles.length){
+		if(canMoveDown){
 			tree.insertNodeDown(current, Grid.tiles[xPosition][yPosition + 1]);
-			seen.add(current);
+			canMove = true;
 		}
 		
 		// If up available
-		if(yPosition - 1 >= 0){
+		if(canMoveUp){
 			tree.insertNodeUp(current, Grid.tiles[xPosition][yPosition - 1]);
-			seen.add(current);
+			canMove = true;
 		}
-		if(current.left != null)
+		
+		if(canMove){
+			seen.add(Integer.toString(xPosition)+","+Integer.toString(yPosition));
+		}
+		if(canMoveLeft && !seen.contains(Integer.toString(xPosition - 1)+","+Integer.toString(yPosition))){
 			generate(depth - 1, current.left, tree, seen, xPosition - 1, yPosition);
-		if(current.right != null)
+		}
+		if(canMoveRight && !seen.contains(Integer.toString(xPosition + 1)+","+Integer.toString(yPosition))){
 			generate(depth - 1, current.right, tree, seen, xPosition + 1, yPosition);
-		if(current.down != null)
+		}
+		if(canMoveDown && !seen.contains(Integer.toString(xPosition)+","+Integer.toString(yPosition + 1))){
 			generate(depth - 1, current.down, tree, seen, xPosition, yPosition + 1);
-		if(current.up != null)
+		}
+		if(canMoveUp && !seen.contains(Integer.toString(xPosition)+","+Integer.toString(yPosition - 1))){
 			generate(depth - 1, current.up, tree, seen, xPosition, yPosition - 1);
+		}
 	}
 	
 	public static Direction nextBestMove(Creature c){
