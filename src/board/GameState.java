@@ -15,35 +15,61 @@ public class GameState {
 	
 	public static QuadTree generateQuadTree(Creature c){
 		QuadTree state = new QuadTree();
-		QuadTreeNode root = state.root;
+		// QuadTreeNode root = state.root;
 		
 		int xCoord = c.getX();
 		int yCoord = c.getY();
 		
 		// Depth of the tree should be equal to the "foresight" (i.e. the evolution stage) of the creature
-		for(int i = 1; i <= c.getEvolutionStage() + 1; i++){			
-			if(xCoord - i >= 0){
-				state.insertNodeLeft(root, Grid.tiles[xCoord - i][yCoord]);
-			}
+		// for(int i = 1; i <= c.getEvolutionStage() + 2; i++){
 			
-			if(xCoord + i < Grid.tiles[0].length){
-				state.insertNodeRight(root, Grid.tiles[xCoord + i][yCoord]);
-			}
 			
-			if(yCoord - i >= 0){
-				state.insertNodeUp(root, Grid.tiles[xCoord][yCoord - i]);
-			}
 			
-			if(yCoord + i < Grid.tiles.length){
-				state.insertNodeDown(root, Grid.tiles[xCoord][yCoord + i]);
-			}
-			
+		// }
+		
+		return generate(10, state.root, state, xCoord, yCoord);
+		// return null;
+	}
+	
+	public static QuadTree generate(int depth, QuadTreeNode current, QuadTree tree, int xPosition, int yPosition){
+		
+		if(depth == 0){
+			return tree;
 		}
 		
-		return state;
+		// If at the far left side
+		if(xPosition - depth >= 0){
+			tree.insertNodeLeft(tree.root, Grid.tiles[xPosition][yPosition]);
+			return generate(depth - 1, current.left, tree, xPosition - 1, yPosition);
+		}
+		
+		//If at the far right side
+		if(xPosition + depth < Grid.tiles[0].length){
+			tree.insertNodeRight(tree.root, Grid.tiles[xPosition][yPosition]);
+			return generate(depth - 1, current.right, tree, xPosition + 1, yPosition);
+		}
+		
+		// If at bottom of board
+		if(yPosition - depth >= 0){
+			tree.insertNodeDown(tree.root, Grid.tiles[xPosition][yPosition]);
+			return generate(depth - 1, current.down, tree, xPosition, yPosition - 1);
+		}
+		
+		// If at top of board
+		if(yPosition + depth < Grid.tiles.length){
+			tree.insertNodeUp(tree.root, Grid.tiles[xPosition][yPosition]);
+			return generate(depth - 1, current.up, tree, xPosition, yPosition + 1);
+		}
+		
+		return null;
 	}
 	
 	public static Direction nextBestMove(Creature c){
+		
+		// Random chance of choosing a random direction. TODO: Fix condition
+//		if((int)(Math.random() * 2) < c.getEvolutionStage()){
+//			return GameState.getRandomDirection();
+//		}
 		
 		QuadTree options = generateQuadTree(c);
 		
@@ -53,7 +79,6 @@ public class GameState {
 		List<QuadTreeNode> unvisited = new ArrayList<QuadTreeNode>();
 		unvisited.add(options.root);
 		int steps = 0;
-		
 		
 		// Breadth-first-search. Determine the tile to go to next
 		while(!unvisited.isEmpty()){

@@ -33,8 +33,8 @@ public class Main extends Application {
 			// Create grid
 			Grid.screenWidth = width;
 			Grid.screenHeight = height;
-			int gridHeight = 3;
-			int gridWidth = 3;
+			int gridHeight = 10;
+			int gridWidth = 10;
 			
 			final Grid grid = new Grid(gridHeight, gridWidth);
 			
@@ -57,7 +57,6 @@ public class Main extends Application {
 			Grid.addCreature(c, 0, 0);
 			
 			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
-				
 				 Direction d = GameState.nextBestMove(c);
 				 System.out.println(d);
 				 c.move(d);
