@@ -16,10 +16,12 @@ public class GameState {
 	public static QuadTree generateQuadTree(Creature c){
 		QuadTree state = new QuadTree();
 		// QuadTreeNode root = state.root;
+		ArrayList<String> seen = new ArrayList<String>();
 		
 		int xCoord = c.getX();
 		int yCoord = c.getY();
 		
+		seen.add(Integer.toString(xCoord) + "," + Integer.toString(yCoord));
 		// Depth of the tree should be equal to the "foresight" (i.e. the evolution stage) of the creature
 		// for(int i = 1; i <= c.getEvolutionStage() + 2; i++){
 			
@@ -27,38 +29,42 @@ public class GameState {
 			
 		// }
 		
-		return generate(10, state.root, state, xCoord, yCoord);
+		return generate(9, state.root, state, seen, xCoord, yCoord);
 		// return null;
 	}
 	
-	public static QuadTree generate(int depth, QuadTreeNode current, QuadTree tree, int xPosition, int yPosition){
+	public static QuadTree generate(int depth, QuadTreeNode current, QuadTree tree, ArrayList<String> seen, int xPosition, int yPosition){
 		
 		if(depth == 0){
 			return tree;
 		}
 		
 		// If at the far left side
-		if(xPosition - depth >= 0){
-			tree.insertNodeLeft(tree.root, Grid.tiles[xPosition][yPosition]);
-			return generate(depth - 1, current.left, tree, xPosition - 1, yPosition);
+		if(xPosition - 1 >= 0 && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
+			tree.insertNodeLeft(current, Grid.tiles[xPosition][yPosition]);
+			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
+			return generate(depth - 1, current.left, tree, seen, xPosition - 1, yPosition);
 		}
 		
 		//If at the far right side
-		if(xPosition + depth < Grid.tiles[0].length){
-			tree.insertNodeRight(tree.root, Grid.tiles[xPosition][yPosition]);
-			return generate(depth - 1, current.right, tree, xPosition + 1, yPosition);
+		if(xPosition + 1 < Grid.tiles[0].length && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
+			tree.insertNodeRight(current, Grid.tiles[xPosition][yPosition]);
+			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
+			return generate(depth - 1, current.right, tree, seen, xPosition + 1, yPosition);
 		}
 		
 		// If at bottom of board
-		if(yPosition - depth >= 0){
-			tree.insertNodeDown(tree.root, Grid.tiles[xPosition][yPosition]);
-			return generate(depth - 1, current.down, tree, xPosition, yPosition - 1);
+		if(yPosition - 1 >= 0 && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
+			tree.insertNodeDown(current, Grid.tiles[xPosition][yPosition]);
+			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
+			return generate(depth - 1, current.down, tree, seen, xPosition, yPosition - 1);
 		}
 		
 		// If at top of board
-		if(yPosition + depth < Grid.tiles.length){
-			tree.insertNodeUp(tree.root, Grid.tiles[xPosition][yPosition]);
-			return generate(depth - 1, current.up, tree, xPosition, yPosition + 1);
+		if(yPosition + 1 < Grid.tiles.length && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
+			tree.insertNodeUp(current, Grid.tiles[xPosition][yPosition]);
+			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
+			return generate(depth - 1, current.up, tree, seen, xPosition, yPosition + 1);
 		}
 		
 		return null;
