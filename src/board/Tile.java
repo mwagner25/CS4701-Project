@@ -15,12 +15,14 @@ public class Tile extends StackPane{
 	private double width;
 	private double height;
 	private DNA dna;
+	private boolean hasDNA;
 	
 	// Construct a tile of a given width and height
 	public Tile(double width, double height){
 		this.img = null;
 		this.width = width;
 		this.height = height;
+		this.hasDNA = false;
 		
 		Rectangle border = new Rectangle(width, height);
 		border.setFill(null);
@@ -59,6 +61,7 @@ public class Tile extends StackPane{
 	
 	public void setDNA(DNA d){
 		this.dna = d;
+		this.hasDNA = true;
 		this.img = new ImageView(d.getImage());
 		this.img.setFitWidth(0.5 * this.width);
 		this.img.setFitHeight(0.5 * this.height);
@@ -89,6 +92,11 @@ public class Tile extends StackPane{
 	// Getter for tile width
 	public double getTileWidth(){
 		return this.width;
+	}
+	
+	// Returns if the tile has DNA on it
+	public boolean hasDNA(){
+		return this.hasDNA;
 	}
 	
 

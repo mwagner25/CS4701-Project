@@ -56,7 +56,7 @@ public class Main extends Application {
 			final Creature c = new Creature(EvolutionTrack.CAT);
 			Grid.addCreature(c, 0, 0);
 			
-			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), ev -> {
 				 Direction d = GameState.nextBestMove(c);
 				 System.out.println(d);
 				 c.move(d);
@@ -92,12 +92,15 @@ public class Main extends Application {
 	}
 	
 	private void addRandomDNA(int n){
+		System.out.println("GENERATING RANDOM DNA:");
+		
 		for(int i = 0; i < n; i++){
 			int randX = (int) (Math.random() * Grid.tiles[0].length);
 			int randY = (int) (Math.random() * Grid.tiles.length);
 			
 			if(Grid.tiles[randX][randY].getCreature() == null){
 				DNA dna = new DNA(randX, randY, 10);
+				System.out.println("X: " + randX + ", Y:" + randY);
 				Grid.addDNA(dna, randX, randY);
 			}
 			else{

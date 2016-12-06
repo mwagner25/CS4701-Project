@@ -13,61 +13,57 @@ public class GameState {
 	public static ArrayList<Creature> creatures;
 	public static boolean gameOver = false;
 	
+	// Main function for generating the quadtree. Creates the initial tree and generates
+	// the tree based on the creature coordinates
 	public static QuadTree generateQuadTree(Creature c){
 		QuadTree state = new QuadTree();
-		// QuadTreeNode root = state.root;
 		ArrayList<String> seen = new ArrayList<String>();
 		
 		int xCoord = c.getX();
 		int yCoord = c.getY();
+				
+		generate(9, state.root, state, seen, xCoord, yCoord);
 		
-		seen.add(Integer.toString(xCoord) + "," + Integer.toString(yCoord));
-		// Depth of the tree should be equal to the "foresight" (i.e. the evolution stage) of the creature
-		// for(int i = 1; i <= c.getEvolutionStage() + 2; i++){
-			
-			
-			
-		// }
-		
-		return generate(9, state.root, state, seen, xCoord, yCoord);
-		// return null;
+		return state;
 	}
 	
-	public static QuadTree generate(int depth, QuadTreeNode current, QuadTree tree, ArrayList<String> seen, int xPosition, int yPosition){
-		
+	
+	// TODO: Fix below algorithm. Doesn't seem to be accounting for all possible steps. Check to see that correct tiles are being
+	// added in the tree, because our BFS algorithm can't find the correct tiles with DNA on them.
+	
+	// Recursive algorithm to generate the tree
+	public static void generate(int depth, QuadTreeNode current, QuadTree tree, ArrayList<String> seen, int xPosition, int yPosition){
 		if(depth == 0){
-			return tree;
+			return;
 		}
 		
 		// If at the far left side
-		if(xPosition - 1 >= 0 && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
-			tree.insertNodeLeft(current, Grid.tiles[xPosition][yPosition]);
+		if(xPosition - 1 >= 0 && !seen.contains(Integer.toString(xPosition - 1) + "," + Integer.toString(yPosition))){
+			tree.insertNodeLeft(current, Grid.tiles[xPosition - 1][yPosition]);
 			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
-			return generate(depth - 1, current.left, tree, seen, xPosition - 1, yPosition);
+			generate(depth - 1, current.left, tree, seen, xPosition - 1, yPosition);
 		}
 		
 		//If at the far right side
-		if(xPosition + 1 < Grid.tiles[0].length && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
-			tree.insertNodeRight(current, Grid.tiles[xPosition][yPosition]);
+		if(xPosition + 1 < Grid.tiles[0].length && !seen.contains(Integer.toString(xPosition + 1) + "," + Integer.toString(yPosition))){
+			tree.insertNodeRight(current, Grid.tiles[xPosition + 1][yPosition]);
 			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
-			return generate(depth - 1, current.right, tree, seen, xPosition + 1, yPosition);
+			generate(depth - 1, current.right, tree, seen, xPosition + 1, yPosition);
 		}
 		
 		// If at bottom of board
-		if(yPosition - 1 >= 0 && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
-			tree.insertNodeDown(current, Grid.tiles[xPosition][yPosition]);
+		if(yPosition + 1 < Grid.tiles.length && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition - 1))){
+			tree.insertNodeDown(current, Grid.tiles[xPosition][yPosition + 1]);
 			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
-			return generate(depth - 1, current.down, tree, seen, xPosition, yPosition - 1);
+			generate(depth - 1, current.down, tree, seen, xPosition, yPosition + 1);
 		}
 		
 		// If at top of board
-		if(yPosition + 1 < Grid.tiles.length && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition))){
-			tree.insertNodeUp(current, Grid.tiles[xPosition][yPosition]);
+		if(yPosition - 1 >= 0  && !seen.contains(Integer.toString(xPosition) + "," + Integer.toString(yPosition + 1))){
+			tree.insertNodeUp(current, Grid.tiles[xPosition][yPosition - 1]);
 			seen.add(Integer.toString(xPosition) + "," + Integer.toString(yPosition));
-			return generate(depth - 1, current.up, tree, seen, xPosition, yPosition + 1);
+			generate(depth - 1, current.up, tree, seen, xPosition, yPosition - 1);
 		}
-		
-		return null;
 	}
 	
 	public static Direction nextBestMove(Creature c){
@@ -96,11 +92,14 @@ public class GameState {
 			
 			for (QuadTreeNode child : children){
 				if(!child.visited){
-					
 					if(child.getValue().getDNA() != null){
 						double score = child.getValue().getDNA().getValue() / steps;
+						System.out.println("VALUE FOUND:" + child.getValue().getDNA().getValue());
+						System.out.println("STEPS:" + steps);
+						System.out.println("SCORE FOUND:" + score);
 						
 						if(score > bestScore){
+							System.out.println("SCORE HAS BEEN RESET TO " + score);
 							bestScore = score;
 							bestDNA = child.getValue().getDNA();
 						}
@@ -112,10 +111,13 @@ public class GameState {
 			}
 		}
 		
+		// Can't find any DNA within depth radius
 		if(bestScore == 0.0){
+			System.out.println("THIS SHOULD NOT HAPPEN!!!!");
 			return GameState.getRandomDirection();
 		}
 		
+		// Else get the best direction with respect to the DNA found
 		return GameState.getDirectionFromDNA(bestDNA, c);
 		
 	}
