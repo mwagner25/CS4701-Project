@@ -1,5 +1,6 @@
 package application;
 	
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -14,10 +15,17 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import creature.*;
 
 public class Main extends Application {
@@ -25,50 +33,79 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			
 			// Get screen width
 			Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 			double width = primaryScreenBounds.getWidth();
 			double height = primaryScreenBounds.getHeight();
 			
-			// Create grid
-			Grid.screenWidth = width;
-			Grid.screenHeight = height;
-			int gridHeight = 10;
-			int gridWidth = 10;
+			StackPane root = new StackPane();
+			VBox titleComponents = new VBox();
+			titleComponents.setAlignment(Pos.CENTER);
 			
-			final Grid grid = new Grid(gridHeight, gridWidth);
+			Label title = new Label("Welcome to Darwin's Nightmare");
+			titleComponents.getChildren().add(title);
 			
-			// GameState variables
-			ArrayList<Creature> creatures = new ArrayList<Creature>();	
-			GameState.creatures = creatures;
+			Button btn = new Button();
+			btn.setText("Play");
+			btn.setOnAction(new EventHandler<ActionEvent>(){
+				@Override
+				public void handle(ActionEvent event){
+					startGame(primaryStage, width, height);
+				}
+			});
+			titleComponents.getChildren().add(btn);
 			
-			// Populate the grid
-			addRandomCreatures(2);
-			addRandomDNA(3);
+			root.getChildren().add(titleComponents);
+			Scene scene = new Scene(root, width, height);
 			
-			// Render scene
-			Scene scene = new Scene(grid.getGrid(), width, height);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setTitle("Darwin's Nightmare");
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
 			
-			final Creature c = new Creature(EvolutionTrack.CAT);
-			Grid.addCreature(c, 0, 0);
-			
-			Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), ev -> {
-				 Direction d = GameState.nextBestMove(c);
-				 System.out.println(d);
-				 c.move(d);
-				 Grid.refresh();
-			 }));
-		    timeline.setCycleCount(Animation.INDEFINITE);
-		    timeline.play();
-			
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void startGame(Stage primaryStage, double width, double height){
+		
+		// Create grid
+		Grid.screenWidth = width;
+		Grid.screenHeight = height;
+		int gridHeight = 10;
+		int gridWidth = 10;
+		
+		final Grid grid = new Grid(gridHeight, gridWidth);
+					
+		// GameState variables
+		ArrayList<Creature> creatures = new ArrayList<Creature>();	
+		GameState.creatures = creatures;
+		
+		// Populate the grid
+		addRandomCreatures(2);
+		addRandomDNA(3);
+		
+		// Render scene
+		Scene scene = new Scene(grid.getGrid(), width, height);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		primaryStage.setTitle("Darwin's Nightmare");
+		primaryStage.setResizable(false);
+		primaryStage.setScene(scene);
+		
+		final Creature c = new Creature(EvolutionTrack.CAT);
+		Grid.addCreature(c, 0, 0);
+		
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), ev -> {
+			 Direction d = GameState.nextBestMove(c);
+			 System.out.println(d);
+			 c.move(d);
+			 Grid.refresh();
+		 }));
+	    timeline.setCycleCount(Animation.INDEFINITE);
+	    timeline.play();
 	}
 	
 	public static void main(String[] args) {
