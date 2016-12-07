@@ -1,6 +1,7 @@
 package board;
 
 
+import creature.Consumable;
 import creature.Creature;
 import creature.DNA;
 import javafx.geometry.Pos;
@@ -15,7 +16,7 @@ public class Tile extends StackPane{
 	private ImageView img;
 	private double width;
 	private double height;
-	private DNA dna;
+	private Consumable dna;
 	private boolean hasDNA;
 	
 	// Construct a tile of a given width and height
@@ -56,28 +57,33 @@ public class Tile extends StackPane{
 		return this.creature;
 	}
 	
-	public DNA getDNA(){
+	public Consumable getConsumable(){
 		return this.dna;
 	}
 	
-	public void setDNA(DNA d){
-		this.dna = d;
+	public void setConsumable(Consumable dna) throws Exception{
+		
+		if(dna == null){
+			throw new Exception("DNA cannot be null");
+		}
+
+		this.dna = dna;
 		this.hasDNA = true;
-		this.img = new ImageView(d.getImage());
-		this.img.setFitWidth(0.5 * this.width);
-		this.img.setFitHeight(0.5 * this.height);
 		
-		this.getChildren().add(img);
-	}
-	
-	// Change the Creature for this tile
-	public void setCreature(Creature c){
-		this.creature = c;
-		this.img = new ImageView(c.getImage());
-		this.img.setFitWidth(0.5 * this.width);
-		this.img.setFitHeight(0.5 * this.height);
-		
-		this.getChildren().add(img);
+		if(dna instanceof DNA){
+			this.img = new ImageView(((DNA) dna).getImage());
+			this.img.setFitWidth(0.5 * this.width);
+			this.img.setFitHeight(0.5 * this.height);
+			this.getChildren().add(img);
+		}
+		else if(dna instanceof Creature){
+			this.creature = (Creature) dna;
+			this.img = new ImageView(((Creature) dna).getImage());
+			this.img.setFitWidth(0.5 * this.width);
+			this.img.setFitHeight(0.5 * this.height);
+			
+			this.getChildren().add(img);
+		}
 	}
 	
 	public void clearTile(){

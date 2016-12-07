@@ -2,7 +2,7 @@ package creature;
 
 import javafx.scene.image.Image;
 
-public class DNA {
+public class DNA implements Consumable{
 	
 	private int x;
 	private int y;
@@ -33,6 +33,10 @@ public class DNA {
 	
 	public Image getImage(){
 		return this.sprite;
+	}
+
+	public int getDNA() {
+		return this.value;
 	}
 
 }

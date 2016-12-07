@@ -1,6 +1,7 @@
 package board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import creature.*;
@@ -9,15 +10,16 @@ import graph.Node;
 
 public class GameState {
 	
-	public static ArrayList<Creature> creatures;
 	public static boolean gameOver = false;
+	public static HashMap<Creature, Integer> creatures = new HashMap<Creature, Integer>();
+	public static int lastCreatureID = 0;
 	
 	// Generate graph representing grid
 	public static Graph generateGraph(Creature c){
 		return new Graph();
 	}
 	
-	public static Direction nextBestMove(Creature c){
+	public static Direction nextBestMove(Creature c) throws Exception{
 		
 		// Random chance of choosing a random direction. TODO: Fix condition
 //		if((int)(Math.random() * 2) < c.getEvolutionStage()){
@@ -27,7 +29,7 @@ public class GameState {
 		Graph gameGrid = generateGraph(c);
 		
 		double bestScore = 0.0;
-		DNA bestDNA = null;
+		Consumable best = null;
 		
 		List<Node> unvisited = new ArrayList<Node>();
 		unvisited.add(gameGrid.get(c.getX(), c.getY()));
@@ -41,16 +43,22 @@ public class GameState {
 			Node current = unvisited.remove(0);
 			current.visited = true;
 			explored.add(current.x + ", " + current.y);
+		
+			Creature tileCreature = current.getValue().getCreature();
 			
-			if(current.getValue().getDNA() != null){
-				double score = current.getValue().getDNA().getValue() / steps;
-
-				if(score > bestScore){
-					bestScore = score;
-					bestDNA = current.getValue().getDNA();
-				}
+			double score = GameState.getBestDNAValue(current) / steps;
+			
+			boolean itself = false;
+			// If the creature is looking to eat itself...
+			if(GameState.creatures.get(tileCreature) == GameState.creatures.get(c)){
+				itself = true;
 			}
 			
+			if(score > bestScore && !itself){
+				bestScore = score;
+				best = current.getValue().getConsumable();
+			}
+				
 			List<Node> neighbors = current.getNeighbors();
 			
 			for (Node neighbor : neighbors){
@@ -68,11 +76,28 @@ public class GameState {
 		}
 		
 		// Else get the best direction with respect to the DNA found
-		return GameState.getDirectionFromDNA(bestDNA, c);
+		return GameState.getDirectionFromConsumable(best, c);
 		
 	}
 	
-	public static Direction getDirectionFromDNA(DNA dna, Creature c){
+	public static double getBestDNAValue(Node n){
+		double bestScore = 0.0;
+		
+		if(n.getValue().getConsumable() != null){
+			bestScore = n.getValue().getConsumable().getDNA();
+		}
+		else if(n.getValue().getCreature() != null){
+			bestScore = n.getValue().getCreature().getDNA() > bestScore ? n.getValue().getCreature().getDNA() : bestScore;
+		}
+		
+		return bestScore;
+	}
+	
+	public static Direction getDirectionFromConsumable(Consumable dna, Creature c) throws Exception{
+		if (dna == null){
+			throw new Exception();
+		}
+		
 		if ((Math.abs(dna.getX() - c.getX()) <= Math.abs(dna.getY() - c.getY()) 
 				&& Math.abs(dna.getX() - c.getX()) != 0) || 
 				(Math.abs(dna.getX() - c.getX()) > Math.abs(dna.getY() - c.getY()) 

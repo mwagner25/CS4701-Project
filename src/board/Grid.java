@@ -1,5 +1,6 @@
 package board;
 
+import creature.Consumable;
 import creature.Creature;
 import creature.DNA;
 import javafx.scene.Parent;
@@ -60,12 +61,8 @@ public class Grid {
 		return root;
 	}
 	
-	public static void addCreature(Creature c, int x, int y){
-		Grid.tiles[x][y].setCreature(c);
-	}
-	
-	public static void addDNA(DNA d, int x, int y){
-		Grid.tiles[x][y].setDNA(d);
+	public static void addConsumable(Consumable d, int x, int y) throws Exception{
+		Grid.tiles[x][y].setConsumable(d);
 	}
 	
 	/*
@@ -83,7 +80,7 @@ public class Grid {
 		return Grid.tiles;
 	}
 	
-	public static void refresh(){
+	public static void refresh() throws Exception{
 		for(int x = 0; x < tiles[0].length; x++){
 			for(int y = 0; y < tiles.length; y++){
 				Tile oldTile = Grid.tiles[x][y];
@@ -96,13 +93,22 @@ public class Grid {
 					if(xCoord != x || yCoord != y){
 						Tile nextTile = tiles[xCoord][yCoord];
 						
-						if(nextTile.getDNA() != null){
-							c.consumedDNA(nextTile.getDNA());
-							nextTile.clearTile();
+						if(nextTile.getConsumable() != null){
+							if(c.consumedDNA(nextTile.getConsumable())){
+								nextTile.clearTile();
+								nextTile.setConsumable(c);		
+								
+								if (nextTile.getConsumable() instanceof Creature){
+									GameState.creatures.remove(nextTile.getConsumable());
+								}
+								
+							}
 							
+							oldTile.clearTile();
+							continue;
 						}
 						
-						nextTile.setCreature(c);
+						nextTile.setConsumable(c);
 						oldTile.clearTile();
 					}
 				}

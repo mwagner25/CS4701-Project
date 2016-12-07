@@ -46,7 +46,11 @@ public class Main extends Application {
 			btn.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event){
-					startGame(primaryStage, width, height);
+					try {
+						startGame(primaryStage, width, height);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			});
 			titleComponents.getChildren().add(btn);
@@ -65,23 +69,19 @@ public class Main extends Application {
 		}
 	}
 	
-	public void startGame(Stage primaryStage, double width, double height){
+	public void startGame(Stage primaryStage, double width, double height) throws Exception{
 		
 		// Create grid
 		Grid.screenWidth = width;
 		Grid.screenHeight = height;
-		int gridHeight = 10;
-		int gridWidth = 10;
+		int gridHeight = 20;
+		int gridWidth = 20;
 		
 		final Grid grid = new Grid(gridHeight, gridWidth);
-					
-		// GameState variables
-		ArrayList<Creature> creatures = new ArrayList<Creature>();	
-		GameState.creatures = creatures;
 		
 		// Populate the grid
 		addRandomCreatures(1);
-		addRandomDNA(3);
+		addRandomDNA(10);
 		
 		Scene scene = new Scene(grid.getGrid(), width, height);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -92,23 +92,40 @@ public class Main extends Application {
 		int x = (int)(Math.random() * gridHeight);
 		int y = (int)(Math.random() * gridWidth);
 		final Creature c = new Creature(EvolutionTrack.CAT, x, y);
-		Grid.addCreature(c, x, y);
+		Grid.addConsumable(c, x, y);
 		
 		x = (int)(Math.random() * gridHeight);
 		y = (int)(Math.random() * gridWidth);
 		final Creature c2 = new Creature(EvolutionTrack.ELEPHANT, x, y);
-		Grid.addCreature(c2, x, y);
+		Grid.addConsumable(c2, x, y);
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), ev -> {
-			 Direction d = GameState.nextBestMove(c);
-			 Direction d2 = GameState.nextBestMove(c2);
-			 
-			 System.out.println(d);
-			 c.move(d);
-			 
-			 c2.move(d2);
-			 
-			 Grid.refresh();
+		x = (int)(Math.random() * gridHeight);
+		y = (int)(Math.random() * gridWidth);
+		final Creature c3 = new Creature(EvolutionTrack.BIRD, x, y);
+		Grid.addConsumable(c3, x, y);
+		
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.4), ev -> {
+			 Direction d;
+			 Direction d2;
+			 Direction d3;
+			try {
+				d = GameState.nextBestMove(c);
+				d2 = GameState.nextBestMove(c2);
+				d3 = GameState.nextBestMove(c3);
+				
+				System.out.println(d);
+				c.move(d);
+				c2.move(d2);
+				c3.move(d3);
+				
+				System.out.println("CAT:" + c.getDNA() + "," + d);
+				System.out.println("ELEPHANT:" + c2.getDNA() + "," + d2);
+				System.out.println("BIRD:" + c3.getDNA() + "," + d3);
+				Grid.refresh();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		 }));
 	    timeline.setCycleCount(Animation.INDEFINITE);
 	    timeline.play();
@@ -118,15 +135,15 @@ public class Main extends Application {
 		launch(args);
 	}
 	
-	private void addRandomCreatures(int n){
+	private void addRandomCreatures(int n) throws Exception{
 		for(int i = 0; i < n; i++){
 			// Insert the creature at a random point in the grid
 			int randX = (int) (Math.random() * Grid.tiles[0].length);
 			int randY = (int) (Math.random() * Grid.tiles.length);
 			
-			if(Grid.tiles[randX][randY].getDNA() == null){
+			if(Grid.tiles[randX][randY].getConsumable() == null){
 				Creature c = new Creature(EvolutionTrack.ROCK, randX, randY);
-				Grid.addCreature(c, randX, randY);
+				Grid.addConsumable(c, randX, randY);
 			}
 			else{
 				i--;
@@ -134,7 +151,7 @@ public class Main extends Application {
 		}
 	}
 	
-	private void addRandomDNA(int n){
+	private void addRandomDNA(int n) throws Exception{
 		System.out.println("GENERATING RANDOM DNA:");
 		
 		for(int i = 0; i < n; i++){
@@ -144,7 +161,7 @@ public class Main extends Application {
 			if(Grid.tiles[randX][randY].getCreature() == null){
 				DNA dna = new DNA(randX, randY, 10);
 				System.out.println("X: " + randX + ", Y:" + randY);
-				Grid.addDNA(dna, randX, randY);
+				Grid.addConsumable(dna, randX, randY);
 			}
 			else{
 				i--;

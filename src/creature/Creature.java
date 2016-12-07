@@ -1,10 +1,11 @@
 package creature;
 
 import board.EvolutionTrack;
+import board.GameState;
 import board.Grid;
 import javafx.scene.image.Image;
 
-public class Creature {
+public class Creature implements Consumable{
 	
 	private EvolutionTrack evolutionTrack;
 	private int evolutionStage;
@@ -22,6 +23,9 @@ public class Creature {
 		this.evolutionTrack = type;
 		this.spritePathName = "file:assets/png/" + type.toString() + evolutionStage + ".png";
 		this.sprite = new Image(this.spritePathName, true);
+		
+		GameState.creatures.put(this, GameState.lastCreatureID);
+		GameState.lastCreatureID++;
 	}
 
 	// Function to move the creature in a given direction
@@ -63,13 +67,32 @@ public class Creature {
 		return this.evolutionStage;
 	}
 	
-	// Function to be called when a creature ingests DNA
-	public void consumedDNA(DNA d){
-		this.amountDNA += d.getValue();
+	// Function to be called when a creature ingests a consumable DNA/creature
+	public boolean consumedDNA(Consumable consumable){
+		
+		if(consumable instanceof Creature){
+			if(this.amountDNA > consumable.getDNA()){
+				this.amountDNA += consumable.getDNA();
+				
+				if(amountDNA > 10 * Math.pow(this.evolutionStage + 1, 2)){
+					 this.evolve();
+				}
+				
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		
+		// Else this is a DNA
+		this.amountDNA += consumable.getDNA();
 		
 		if(amountDNA > 10 * Math.pow(this.evolutionStage + 1, 2)){
 			 this.evolve();
 		}
+		
+		return true;
 	}
 	
 	// Getter for sprite
