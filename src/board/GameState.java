@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import creature.*;
+import graph.Graph;
+import graph.Node;
 import quadtree.QuadTree;
 import quadtree.QuadTreeNode;
 import board.Coordinate;
@@ -15,15 +17,11 @@ public class GameState {
 	
 	// Main function for generating the quadtree. Creates the initial tree and generates
 	// the tree based on the creature coordinates
-	public static QuadTree generateQuadTree(Creature c){
-		QuadTree state = new QuadTree();
-		List<String> seen = new ArrayList<String>();
+	public static Graph generateGraph(Creature c){
 		
-		int xCoord = c.getX();
-		int yCoord = c.getY();
-		generate(8, state.root, state, seen, xCoord, yCoord);
+		Graph gridState = new Graph();
 	
-		return state;
+		return gridState;
 	}
 	
 	// Recursive algorithm to generate the tree
@@ -86,42 +84,50 @@ public class GameState {
 //			return GameState.getRandomDirection();
 //		}
 		
-		QuadTree options = generateQuadTree(c);
+		Graph gameGrid = generateGraph(c);
 		
 		double bestScore = 0.0;
 		DNA bestDNA = null;
 		
-		List<QuadTreeNode> unvisited = new ArrayList<QuadTreeNode>();
-		unvisited.add(options.root);
-		int steps = 0;
+		List<Node> unvisited = new ArrayList<Node>();
+		unvisited.add(gameGrid.get(0, 0));
+		double steps = 0.0;
+		
+		ArrayList<String> explored = new ArrayList<String>();
 		
 		// Breadth-first-search. Determine the tile to go to next
 		while(!unvisited.isEmpty()){
 			steps++;
-			QuadTreeNode parent = unvisited.remove(0);
-			parent.visited = true;
+			Node current = unvisited.remove(0);
+			current.visited = true;
+			explored.add(current.x + ", " + current.y);
 			
-			List<QuadTreeNode> children = parent.getChildren();
-			
-			for (QuadTreeNode child : children){
-				if(!child.visited){
-					if(child.getValue().getDNA() != null){
-						double score = child.getValue().getDNA().getValue() / steps;
+			if(current.getValue().getDNA() != null){
+				double score = current.getValue().getDNA().getValue() / steps;
+				System.out.println("Hello");
 
-						if(score > bestScore){
-							bestScore = score;
-							bestDNA = child.getValue().getDNA();
-						}
-					}
+				if(score > bestScore){
+					System.out.println("Best score found");
+					bestScore = score;
+					bestDNA = current.getValue().getDNA();
+				}
+			}
+			
+			List<Node> neighbors = current.getNeighbors();
+			
+			for (Node neighbor : neighbors){
+				if(!neighbor.visited){
+
 					
-					unvisited.add(child);
-					child.visited = true;
+					unvisited.add(neighbor);
+					neighbor.visited = true;
 				}
 			}
 		}
 		
 		// Can't find any DNA within depth radius
 		if(bestScore == 0.0){
+			System.out.println("NEVER SHOULD HAPPEN");
 			return GameState.getRandomDirection();
 		}
 		

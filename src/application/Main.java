@@ -70,8 +70,8 @@ public class Main extends Application {
 		// Create grid
 		Grid.screenWidth = width;
 		Grid.screenHeight = height;
-		int gridHeight = 5;
-		int gridWidth = 5;
+		int gridHeight = 20;
+		int gridWidth = 20;
 		
 		final Grid grid = new Grid(gridHeight, gridWidth);
 					
