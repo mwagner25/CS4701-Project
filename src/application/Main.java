@@ -122,6 +122,8 @@ public class Main extends Application {
 				System.out.println("ELEPHANT:" + c2.getDNA() + "," + d2);
 				System.out.println("BIRD:" + c3.getDNA() + "," + d3);
 				Grid.refresh();
+				
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

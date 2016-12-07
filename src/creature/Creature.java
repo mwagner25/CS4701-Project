@@ -23,9 +23,6 @@ public class Creature implements Consumable{
 		this.evolutionTrack = type;
 		this.spritePathName = "file:assets/png/" + type.toString() + evolutionStage + ".png";
 		this.sprite = new Image(this.spritePathName, true);
-		
-		GameState.creatures.put(this, GameState.lastCreatureID);
-		GameState.lastCreatureID++;
 	}
 
 	// Function to move the creature in a given direction

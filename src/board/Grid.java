@@ -98,10 +98,6 @@ public class Grid {
 								nextTile.clearTile();
 								nextTile.setConsumable(c);		
 								
-								if (nextTile.getConsumable() instanceof Creature){
-									GameState.creatures.remove(nextTile.getConsumable());
-								}
-								
 							}
 							
 							oldTile.clearTile();

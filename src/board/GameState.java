@@ -11,8 +11,6 @@ import graph.Node;
 public class GameState {
 	
 	public static boolean gameOver = false;
-	public static HashMap<Creature, Integer> creatures = new HashMap<Creature, Integer>();
-	public static int lastCreatureID = 0;
 	
 	// Generate graph representing grid
 	public static Graph generateGraph(Creature c){
@@ -49,8 +47,9 @@ public class GameState {
 			double score = GameState.getBestDNAValue(current) / steps;
 			
 			boolean itself = false;
+			
 			// If the creature is looking to eat itself...
-			if(GameState.creatures.get(tileCreature) == GameState.creatures.get(c)){
+			if(tileCreature == c){
 				itself = true;
 			}
 			
@@ -71,7 +70,6 @@ public class GameState {
 		
 		// Can't find any DNA within depth radius
 		if(bestScore == 0.0){
-			System.out.println("NEVER SHOULD HAPPEN");
 			return GameState.getRandomDirection();
 		}
 		
