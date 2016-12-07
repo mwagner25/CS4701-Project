@@ -80,7 +80,6 @@ public class Main extends Application {
 		final Grid grid = new Grid(gridHeight, gridWidth);
 		
 		// Populate the grid
-		addRandomCreatures(1);
 		addRandomDNA(10);
 		
 		Scene scene = new Scene(grid.getGrid(), width, height);
@@ -93,39 +92,27 @@ public class Main extends Application {
 		int y = (int)(Math.random() * gridWidth);
 		final Creature c = new Creature(EvolutionTrack.CAT, x, y);
 		Grid.addConsumable(c, x, y);
-		
-		x = (int)(Math.random() * gridHeight);
-		y = (int)(Math.random() * gridWidth);
-		final Creature c2 = new Creature(EvolutionTrack.ELEPHANT, x, y);
-		Grid.addConsumable(c2, x, y);
-		
-		x = (int)(Math.random() * gridHeight);
-		y = (int)(Math.random() * gridWidth);
-		final Creature c3 = new Creature(EvolutionTrack.BIRD, x, y);
-		Grid.addConsumable(c3, x, y);
+		GameState.allCreatures.add(c);
 		
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.4), ev -> {
-			 Direction d;
-			 Direction d2;
-			 Direction d3;
+			Direction nextStep;
+			 
 			try {
-				d = GameState.nextBestMove(c);
-				d2 = GameState.nextBestMove(c2);
-				d3 = GameState.nextBestMove(c3);
 				
-				System.out.println(d);
-				c.move(d);
-				c2.move(d2);
-				c3.move(d3);
+				for(Creature creature : GameState.allCreatures){
+					nextStep = GameState.nextBestMove(creature);
+					creature.move(nextStep);
+				}
 				
-				System.out.println("CAT:" + c.getDNA() + "," + d);
-				System.out.println("ELEPHANT:" + c2.getDNA() + "," + d2);
-				System.out.println("BIRD:" + c3.getDNA() + "," + d3);
 				Grid.refresh();
 				
-				
+				if(Math.random() < 0.08){
+					addRandomCreatures(1);
+				}
+				if(Math.random() < 0.2){
+					addRandomDNA(1);
+				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		 }));
@@ -144,7 +131,33 @@ public class Main extends Application {
 			int randY = (int) (Math.random() * Grid.tiles.length);
 			
 			if(Grid.tiles[randX][randY].getConsumable() == null){
-				Creature c = new Creature(EvolutionTrack.ROCK, randX, randY);
+				int randCreature = (int) (Math.random() * 7);
+				Creature c = null;
+				switch(randCreature){
+				case 0:
+					c = new Creature(EvolutionTrack.BIRD, randX, randY);
+					break;
+				case 1:
+					c = new Creature(EvolutionTrack.CAT, randX, randY);
+					break;
+				case 2:
+					c = new Creature(EvolutionTrack.PLANT, randX, randY);
+					break;
+				case 3:
+					c = new Creature(EvolutionTrack.ELECTRICITY, randX, randY);
+					break;
+				case 4:
+					c = new Creature(EvolutionTrack.ELEPHANT, randX, randY);
+					break;
+				case 5:
+					c = new Creature(EvolutionTrack.ROBOT, randX, randY);
+					break;
+				case 6:
+					c = new Creature(EvolutionTrack.ROCK, randX, randY);
+					break;
+				}
+		
+				GameState.allCreatures.add(c);
 				Grid.addConsumable(c, randX, randY);
 			}
 			else{

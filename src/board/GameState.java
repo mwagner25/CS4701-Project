@@ -3,6 +3,7 @@ package board;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 import creature.*;
 import graph.Graph;
@@ -11,6 +12,7 @@ import graph.Node;
 public class GameState {
 	
 	public static boolean gameOver = false;
+	public static ArrayList<Creature> allCreatures = new ArrayList<Creature>();
 	
 	// Generate graph representing grid
 	public static Graph generateGraph(Creature c){
@@ -19,10 +21,10 @@ public class GameState {
 	
 	public static Direction nextBestMove(Creature c) throws Exception{
 		
-		// Random chance of choosing a random direction. TODO: Fix condition
-//		if((int)(Math.random() * 2) < c.getEvolutionStage()){
-//			return GameState.getRandomDirection();
-//		}
+		// Random chance of choosing a random direction.
+		if(Math.random() < 1.0/(c.getDNA()+5)){
+			return GameState.getRandomDirection();
+		}
 		
 		Graph gameGrid = generateGraph(c);
 		
@@ -75,6 +77,59 @@ public class GameState {
 		
 		// Else get the best direction with respect to the DNA found
 		return GameState.getDirectionFromConsumable(best, c);
+		
+	}
+public static Direction dfs(Creature c) throws Exception{
+		
+		// Random chance of choosing a random direction. TODO: Fix condition
+		if(Math.random() < 1.0/(c.getDNA()+5)){
+			return GameState.getRandomDirection();
+		}
+		
+		Graph gameGrid = generateGraph(c);
+		
+		double bestScore = 0.0;
+		Consumable bestDNA = null;
+		
+		Stack<Node> unvisited = new Stack<Node>();
+		unvisited.push(gameGrid.get(c.getX(), c.getY()));
+		double steps = 0.0;
+				
+		// Depth-first-search. Determine the tile to go to next
+		while(!unvisited.isEmpty()){
+			steps++;
+			Node current = unvisited.pop();
+			
+			Creature tileCreature = current.getValue().getCreature();
+			boolean itself = false;
+			
+			// If the creature is looking to eat itself...
+			if(tileCreature == c)
+				itself = true;
+	
+			if(!current.visited){
+				current.visited = true;
+				if(current.getValue().getConsumable() != null){
+					double score = current.getValue().getConsumable().getDNA() / steps;
+					if(score > bestScore && !itself){
+						bestScore = score;
+						bestDNA = current.getValue().getConsumable();
+					}
+				}
+				List<Node> neighbors = current.getNeighbors();
+				for (Node neighbor : neighbors){
+					unvisited.push(neighbor);
+				}
+			}
+		}
+		// Can't find any DNA within depth radius
+		if(bestScore == 0.0){
+			System.out.println("NEVER SHOULD HAPPEN");
+			return GameState.getRandomDirection();
+		}
+		
+		// Else get the best direction with respect to the DNA found
+		return GameState.getDirectionFromConsumable(bestDNA, c);
 		
 	}
 	

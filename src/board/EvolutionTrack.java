@@ -1,5 +1,5 @@
 package board;
 
 public enum EvolutionTrack {
-	CAT, ELEPHANT, BIRD, LEG, ROCK, PLANT, ELECTRICITY
+	BIRD, CAT, PLANT, ELECTRICITY, ELEPHANT, ROBOT, ROCK
 }

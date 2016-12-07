@@ -95,9 +95,14 @@ public class Grid {
 						
 						if(nextTile.getConsumable() != null){
 							if(c.consumedDNA(nextTile.getConsumable())){
+								
+								if(nextTile.getConsumable() instanceof Creature){
+									GameState.allCreatures.remove(nextTile.getConsumable());
+								}
+								
+								
 								nextTile.clearTile();
 								nextTile.setConsumable(c);		
-								
 							}
 							
 							oldTile.clearTile();
