@@ -70,8 +70,8 @@ public class Main extends Application {
 		// Create grid
 		Grid.screenWidth = width;
 		Grid.screenHeight = height;
-		int gridHeight = 20;
-		int gridWidth = 20;
+		int gridHeight = 10;
+		int gridWidth = 10;
 		
 		final Grid grid = new Grid(gridHeight, gridWidth);
 					
@@ -80,8 +80,8 @@ public class Main extends Application {
 		GameState.creatures = creatures;
 		
 		// Populate the grid
-		addRandomCreatures(0);
-		addRandomDNA(1);
+		addRandomCreatures(1);
+		addRandomDNA(3);
 		
 		Scene scene = new Scene(grid.getGrid(), width, height);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -89,13 +89,25 @@ public class Main extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
 		
-		final Creature c = new Creature(EvolutionTrack.CAT);
-		Grid.addCreature(c, 0, 0);
+		int x = (int)(Math.random() * gridHeight);
+		int y = (int)(Math.random() * gridWidth);
+		final Creature c = new Creature(EvolutionTrack.CAT, x, y);
+		Grid.addCreature(c, x, y);
+		
+		x = (int)(Math.random() * gridHeight);
+		y = (int)(Math.random() * gridWidth);
+		final Creature c2 = new Creature(EvolutionTrack.ELEPHANT, x, y);
+		Grid.addCreature(c2, x, y);
 		
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), ev -> {
 			 Direction d = GameState.nextBestMove(c);
+			 Direction d2 = GameState.nextBestMove(c2);
+			 
 			 System.out.println(d);
 			 c.move(d);
+			 
+			 c2.move(d2);
+			 
 			 Grid.refresh();
 		 }));
 	    timeline.setCycleCount(Animation.INDEFINITE);

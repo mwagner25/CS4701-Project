@@ -6,75 +6,15 @@ import java.util.List;
 import creature.*;
 import graph.Graph;
 import graph.Node;
-import quadtree.QuadTree;
-import quadtree.QuadTreeNode;
-import board.Coordinate;
 
 public class GameState {
 	
 	public static ArrayList<Creature> creatures;
 	public static boolean gameOver = false;
 	
-	// Main function for generating the quadtree. Creates the initial tree and generates
-	// the tree based on the creature coordinates
+	// Generate graph representing grid
 	public static Graph generateGraph(Creature c){
-		
-		Graph gridState = new Graph();
-	
-		return gridState;
-	}
-	
-	// Recursive algorithm to generate the tree
-	public static void generate(int depth, QuadTreeNode current, QuadTree tree, List<String> seen, int xPosition, int yPosition){
-		if(depth == -1){
-			return;
-		}
-		
-		boolean canMoveLeft = xPosition - 1 >= 0;
-		boolean canMoveRight = xPosition + 1 < Grid.tiles[0].length;
-		boolean canMoveDown = yPosition + 1 < Grid.tiles.length;
-		boolean canMoveUp = yPosition - 1 >= 0;
-		boolean canMove = canMoveLeft || canMoveRight || canMoveDown || canMoveUp;
-		
-		// If left available
-		if(canMoveLeft){
-			tree.insertNodeLeft(current, Grid.tiles[xPosition - 1][yPosition]);
-			canMove = true;
-		}
-		
-		//If right available
-		if(canMoveRight){
-			tree.insertNodeRight(current, Grid.tiles[xPosition + 1][yPosition]);
-			canMove = true;
-		}
-		
-		// If down available
-		if(canMoveDown){
-			tree.insertNodeDown(current, Grid.tiles[xPosition][yPosition + 1]);
-			canMove = true;
-		}
-		
-		// If up available
-		if(canMoveUp){
-			tree.insertNodeUp(current, Grid.tiles[xPosition][yPosition - 1]);
-			canMove = true;
-		}
-		
-		if(canMove){
-			seen.add(Integer.toString(xPosition)+","+Integer.toString(yPosition));
-		}
-		if(canMoveLeft && !seen.contains(Integer.toString(xPosition - 1)+","+Integer.toString(yPosition))){
-			generate(depth - 1, current.left, tree, seen, xPosition - 1, yPosition);
-		}
-		if(canMoveRight && !seen.contains(Integer.toString(xPosition + 1)+","+Integer.toString(yPosition))){
-			generate(depth - 1, current.right, tree, seen, xPosition + 1, yPosition);
-		}
-		if(canMoveDown && !seen.contains(Integer.toString(xPosition)+","+Integer.toString(yPosition + 1))){
-			generate(depth - 1, current.down, tree, seen, xPosition, yPosition + 1);
-		}
-		if(canMoveUp && !seen.contains(Integer.toString(xPosition)+","+Integer.toString(yPosition - 1))){
-			generate(depth - 1, current.up, tree, seen, xPosition, yPosition - 1);
-		}
+		return new Graph();
 	}
 	
 	public static Direction nextBestMove(Creature c){
@@ -90,7 +30,7 @@ public class GameState {
 		DNA bestDNA = null;
 		
 		List<Node> unvisited = new ArrayList<Node>();
-		unvisited.add(gameGrid.get(0, 0));
+		unvisited.add(gameGrid.get(c.getX(), c.getY()));
 		double steps = 0.0;
 		
 		ArrayList<String> explored = new ArrayList<String>();
@@ -104,10 +44,8 @@ public class GameState {
 			
 			if(current.getValue().getDNA() != null){
 				double score = current.getValue().getDNA().getValue() / steps;
-				System.out.println("Hello");
 
 				if(score > bestScore){
-					System.out.println("Best score found");
 					bestScore = score;
 					bestDNA = current.getValue().getDNA();
 				}
@@ -117,8 +55,6 @@ public class GameState {
 			
 			for (Node neighbor : neighbors){
 				if(!neighbor.visited){
-
-					
 					unvisited.add(neighbor);
 					neighbor.visited = true;
 				}

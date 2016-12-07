@@ -14,17 +14,6 @@ public class Creature {
 	private String spritePathName;
 	private Image sprite;
 	
-	// Constructor to create a creature of a given type
-	public Creature(EvolutionTrack type){
-		this.x = 0;
-		this.y = 0;
-		this.evolutionStage = 0;
-		this.amountDNA = 0;
-		this.evolutionTrack = type;
-		this.spritePathName = "file:assets/png/" + type.toString() + evolutionStage + ".png";
-		this.sprite = new Image(this.spritePathName, true);
-	}
-	
 	public Creature(EvolutionTrack type, int x, int y){
 		this.x = x;
 		this.y = y;
@@ -78,8 +67,8 @@ public class Creature {
 	public void consumedDNA(DNA d){
 		this.amountDNA += d.getValue();
 		
-		if(amountDNA > 10 * (this.evolutionStage + 1)){
-			// this.evolve();
+		if(amountDNA > 10 * Math.pow(this.evolutionStage + 1, 2)){
+			 this.evolve();
 		}
 	}
 	
