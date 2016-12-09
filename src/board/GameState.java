@@ -55,7 +55,7 @@ public class GameState {
 				itself = true;
 			}
 			
-			if(score > bestScore && !itself){
+			if(score > bestScore && !itself && score < c.getDNA()){ //not eating yourself or someone bigger than you
 				bestScore = score;
 				best = current.getValue().getConsumable();
 			}

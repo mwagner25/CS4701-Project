@@ -19,7 +19,7 @@ public class Creature implements Consumable{
 		this.x = x;
 		this.y = y;
 		this.evolutionStage = 0;
-		this.amountDNA = 0;
+		this.amountDNA = 11; //to be bigger than basic DNA
 		this.evolutionTrack = type;
 		this.spritePathName = "file:assets/png/" + type.toString() + evolutionStage + ".png";
 		this.sprite = new Image(this.spritePathName, true);
@@ -47,7 +47,7 @@ public class Creature implements Consumable{
 		this.evolutionStage++;
 		
 		// If this creature has reached its maximum point of evolution, stop
-		if(evolutionStage > 3){
+		if(evolutionStage > 5){
 			return;
 		}
 		
@@ -71,7 +71,7 @@ public class Creature implements Consumable{
 			if(this.amountDNA > consumable.getDNA()){
 				this.amountDNA += consumable.getDNA();
 				
-				if(amountDNA > 10 * Math.pow(this.evolutionStage + 1, 2)){
+				if(this.amountDNA > 10 * Math.pow(this.evolutionStage + 1, 2.5)){
 					 this.evolve();
 				}
 				
@@ -85,7 +85,7 @@ public class Creature implements Consumable{
 		// Else this is a DNA
 		this.amountDNA += consumable.getDNA();
 		
-		if(amountDNA > 10 * Math.pow(this.evolutionStage + 1, 2)){
+		if(this.amountDNA > 10 * Math.pow(this.evolutionStage + 1, 2.5)){
 			 this.evolve();
 		}
 		

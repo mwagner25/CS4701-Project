@@ -74,8 +74,8 @@ public class Main extends Application {
 		// Create grid
 		Grid.screenWidth = width;
 		Grid.screenHeight = height;
-		int gridHeight = 20;
-		int gridWidth = 20;
+		int gridHeight = 15;
+		int gridWidth = 15;
 		
 		final Grid grid = new Grid(gridHeight, gridWidth);
 		
@@ -90,26 +90,26 @@ public class Main extends Application {
 		
 		int x = (int)(Math.random() * gridHeight);
 		int y = (int)(Math.random() * gridWidth);
-		final Creature c = new Creature(EvolutionTrack.CAT, x, y);
+		final Creature c = new Creature(EvolutionTrack.BIRD, x, y);
 		Grid.addConsumable(c, x, y);
 		GameState.allCreatures.add(c);
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.4), ev -> {
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.75), ev -> {
 			Direction nextStep;
 			 
 			try {
 				
 				for(Creature creature : GameState.allCreatures){
-					nextStep = GameState.nextBestMove(creature);
+					nextStep = GameState.dfs(creature);
 					creature.move(nextStep);
 				}
 				
 				Grid.refresh();
 				
-				if(Math.random() < 0.08){
+				if(Math.random() < 0.2){
 					addRandomCreatures(1);
 				}
-				if(Math.random() < 0.2){
+				if(Math.random() < 0.4){
 					addRandomDNA(1);
 				}
 			} catch (Exception e) {
@@ -150,7 +150,7 @@ public class Main extends Application {
 					c = new Creature(EvolutionTrack.ELEPHANT, randX, randY);
 					break;
 				case 5:
-					c = new Creature(EvolutionTrack.ROBOT, randX, randY);
+					c = new Creature(EvolutionTrack.LEGS, randX, randY);
 					break;
 				case 6:
 					c = new Creature(EvolutionTrack.ROCK, randX, randY);
