@@ -68,17 +68,10 @@ public class Main extends Application {
 			Scene scene = new Scene(root, width, height);
 			
 			Image darwinBackground = new Image("file:assets/png/background.png");
-//			BackgroundImage background = new BackgroundImage(darwinBackground, 
-//				    BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-//				    BackgroundPosition.DEFAULT, 
-//				    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
 			 BackgroundImage background = new BackgroundImage(darwinBackground, 
 					 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, 
 					 new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
 			 root.setBackground(new Background(background));
-			
-			// ImagePattern background = new ImagePattern(darwinBackground);
-			// scene.setFill(background);
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setTitle("Darwin's Nightmare");
