@@ -18,6 +18,8 @@ public class Tile extends StackPane{
 	private double height;
 	private Consumable dna;
 	private boolean hasDNA;
+	private final double CREATURE_IMAGE_PROPORTION = 0.9;
+	private final double DNA_IMAGE_PROPORTION = 0.4;
 	
 	// Construct a tile of a given width and height
 	public Tile(double width, double height){
@@ -38,8 +40,8 @@ public class Tile extends StackPane{
 	// Construct a tile with a creature initially in it
 	public Tile(double width, double height, Creature c){
 		this.img = new ImageView(c.getImage());
-		this.img.setFitWidth(0.5 * width);
-		this.img.setFitHeight(0.5 * height);
+		this.img.setFitWidth(CREATURE_IMAGE_PROPORTION * width);
+		this.img.setFitHeight(CREATURE_IMAGE_PROPORTION * height);
 		
 		this.width = width;
 		this.height = height;
@@ -57,6 +59,7 @@ public class Tile extends StackPane{
 		return this.creature;
 	}
 	
+	// Return the "consumable" proj
 	public Consumable getConsumable(){
 		return this.dna;
 	}
@@ -72,15 +75,15 @@ public class Tile extends StackPane{
 		
 		if(dna instanceof DNA){
 			this.img = new ImageView(((DNA) dna).getImage());
-			this.img.setFitWidth(0.5 * this.width);
-			this.img.setFitHeight(0.5 * this.height);
+			this.img.setFitWidth(DNA_IMAGE_PROPORTION * this.width);
+			this.img.setFitHeight(DNA_IMAGE_PROPORTION * this.height);
 			this.getChildren().add(img);
 		}
 		else if(dna instanceof Creature){
 			this.creature = (Creature) dna;
 			this.img = new ImageView(((Creature) dna).getImage());
-			this.img.setFitWidth(0.5 * this.width);
-			this.img.setFitHeight(0.5 * this.height);
+			this.img.setFitWidth(CREATURE_IMAGE_PROPORTION * this.width);
+			this.img.setFitHeight(CREATURE_IMAGE_PROPORTION * this.height);
 			
 			this.getChildren().add(img);
 		}

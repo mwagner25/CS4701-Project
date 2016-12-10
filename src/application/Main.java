@@ -35,7 +35,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			
+		
 			// Get screen width
 			Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 			double width = primaryScreenBounds.getWidth();
@@ -105,7 +105,7 @@ public class Main extends Application {
 		
 		int x = (int)(Math.random() * gridHeight);
 		int y = (int)(Math.random() * gridWidth);
-		final Creature c = new Creature(EvolutionTrack.BIRD, x, y);
+		final Creature c = getRandomCreature(x, y);
 		Grid.addConsumable(c, x, y);
 		GameState.allCreatures.add(c);
 		
@@ -123,7 +123,7 @@ public class Main extends Application {
 				if(Math.random() < 0.2){
 					addRandomCreatures(1);
 				}
-				if(Math.random() < 0.2){
+				if(Math.random() < 0.4){
 					addRandomDNA(1);
 				}
 			} catch (Exception e) {
@@ -134,10 +134,7 @@ public class Main extends Application {
 	    timeline.play();
 	}
 	
-	public static void main(String[] args) {
-		launch(args);
-	}
-	
+	// Helper function to add random creatures to the grid
 	private void addRandomCreatures(int n) throws Exception{
 		for(int i = 0; i < n; i++){
 			// Insert the creature at a random point in the grid
@@ -145,32 +142,7 @@ public class Main extends Application {
 			int randY = (int) (Math.random() * Grid.tiles.length);
 			
 			if(Grid.tiles[randX][randY].getConsumable() == null){
-				int randCreature = (int) (Math.random() * 7);
-				Creature c = null;
-				switch(randCreature){
-				case 0:
-					c = new Creature(EvolutionTrack.BIRD, randX, randY);
-					break;
-				case 1:
-					c = new Creature(EvolutionTrack.CAT, randX, randY);
-					break;
-				case 2:
-					c = new Creature(EvolutionTrack.PLANT, randX, randY);
-					break;
-				case 3:
-					c = new Creature(EvolutionTrack.ELECTRICITY, randX, randY);
-					break;
-				case 4:
-					c = new Creature(EvolutionTrack.ELEPHANT, randX, randY);
-					break;
-				case 5:
-					c = new Creature(EvolutionTrack.LEGS, randX, randY);
-					break;
-				case 6:
-					c = new Creature(EvolutionTrack.ROCK, randX, randY);
-					break;
-				}
-		
+				Creature c = getRandomCreature(randX, randY);		
 				GameState.allCreatures.add(c);
 				Grid.addConsumable(c, randX, randY);
 			}
@@ -180,9 +152,8 @@ public class Main extends Application {
 		}
 	}
 	
-	private void addRandomDNA(int n) throws Exception{
-		System.out.println("GENERATING RANDOM DNA:");
-		
+	// Helper function insert random DNA to the grid
+	private void addRandomDNA(int n) throws Exception{		
 		for(int i = 0; i < n; i++){
 			int randX = (int) (Math.random() * Grid.tiles[0].length);
 			int randY = (int) (Math.random() * Grid.tiles.length);
@@ -195,7 +166,41 @@ public class Main extends Application {
 			else{
 				i--;
 			}
-			
 		}
+	}
+	
+	// Helper function to get a random creature
+	private Creature getRandomCreature(int x, int y){
+		int randCreature = (int) (Math.random() * 7);
+		Creature c = null;
+					
+		switch(randCreature){
+		case 0:
+			c = new Creature(EvolutionTrack.BIRD, x, y);
+			break;
+		case 1:
+			c = new Creature(EvolutionTrack.CAT, x, y);
+			break;
+		case 2:
+			c = new Creature(EvolutionTrack.PLANT, x, y);
+			break;
+		case 3:
+			c = new Creature(EvolutionTrack.ELECTRICITY, x, y);
+			break;
+		case 4:
+			c = new Creature(EvolutionTrack.ELEPHANT, x, y);
+			break;
+		case 5:
+			c = new Creature(EvolutionTrack.LEGS, x, y);
+			break;
+		case 6:
+			c = new Creature(EvolutionTrack.ROCK, x, y);
+			break;
+		}
+		return c;
+	}
+	
+	public static void main(String[] args) {
+		launch(args);
 	}
 }
