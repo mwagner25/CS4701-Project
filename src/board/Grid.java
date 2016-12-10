@@ -2,7 +2,6 @@ package board;
 
 import creature.Consumable;
 import creature.Creature;
-import creature.DNA;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 
@@ -95,7 +94,7 @@ public class Grid {
 						
 						if(nextTile.getConsumable() != null){
 							if(c.consumedDNA(nextTile.getConsumable())){
-								
+								GameState.playSound("bite.wav");
 								if(nextTile.getConsumable() instanceof Creature){
 									GameState.allCreatures.remove(nextTile.getConsumable());
 								}

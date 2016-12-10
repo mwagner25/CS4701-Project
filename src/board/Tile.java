@@ -86,6 +86,7 @@ public class Tile extends StackPane{
 		}
 	}
 	
+	// Removes its registered images from the tile
 	public void clearTile(){
 		this.getChildren().remove(this.img);
 		this.creature = null;

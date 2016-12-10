@@ -2,7 +2,6 @@ package application;
 	
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import java.util.ArrayList;
 
 import board.EvolutionTrack;
 import board.GameState;
@@ -19,8 +18,16 @@ import javafx.util.Duration;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import creature.*;
 
 public class Main extends Application {
@@ -39,10 +46,12 @@ public class Main extends Application {
 			titleComponents.setAlignment(Pos.CENTER);
 			
 			Label title = new Label("Welcome to Darwin's Nightmare");
+			title.setTextFill(Color.BROWN);
+			title.setFont(Font.font(32));
 			titleComponents.getChildren().add(title);
 			
 			Button btn = new Button();
-			btn.setText("Play");
+			btn.setText("Start Simulation");
 			btn.setOnAction(new EventHandler<ActionEvent>(){
 				@Override
 				public void handle(ActionEvent event){
@@ -57,6 +66,19 @@ public class Main extends Application {
 			
 			root.getChildren().add(titleComponents);
 			Scene scene = new Scene(root, width, height);
+			
+			Image darwinBackground = new Image("file:assets/png/background.png");
+//			BackgroundImage background = new BackgroundImage(darwinBackground, 
+//				    BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+//				    BackgroundPosition.DEFAULT, 
+//				    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
+			 BackgroundImage background = new BackgroundImage(darwinBackground, 
+					 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, 
+					 new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
+			 root.setBackground(new Background(background));
+			
+			// ImagePattern background = new ImagePattern(darwinBackground);
+			// scene.setFill(background);
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setTitle("Darwin's Nightmare");
@@ -94,13 +116,12 @@ public class Main extends Application {
 		Grid.addConsumable(c, x, y);
 		GameState.allCreatures.add(c);
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.75), ev -> {
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), ev -> {
 			Direction nextStep;
 			 
 			try {
-				
 				for(Creature creature : GameState.allCreatures){
-					nextStep = GameState.dfs(creature);
+					nextStep = GameState.bfs(creature);
 					creature.move(nextStep);
 				}
 				
@@ -173,7 +194,7 @@ public class Main extends Application {
 			int randX = (int) (Math.random() * Grid.tiles[0].length);
 			int randY = (int) (Math.random() * Grid.tiles.length);
 			
-			if(Grid.tiles[randX][randY].getCreature() == null){
+			if(Grid.tiles[randX][randY].getConsumable() == null){
 				DNA dna = new DNA(randX, randY, 10);
 				System.out.println("X: " + randX + ", Y:" + randY);
 				Grid.addConsumable(dna, randX, randY);

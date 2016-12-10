@@ -1,13 +1,16 @@
 package board;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
 import creature.*;
 import graph.Graph;
 import graph.Node;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 public class GameState {
 	
@@ -19,10 +22,10 @@ public class GameState {
 		return new Graph();
 	}
 	
-	public static Direction nextBestMove(Creature c) throws Exception{
+	public static Direction bfs(Creature c) throws Exception{
 		
 		// Random chance of choosing a random direction.
-		if(Math.random() < 1.0/(c.getDNA()+5)){
+		if(Math.random() < 1.0 / (c.getDNA() + 5)){
 			return GameState.getRandomDirection();
 		}
 		
@@ -79,10 +82,12 @@ public class GameState {
 		return GameState.getDirectionFromConsumable(best, c);
 		
 	}
-public static Direction dfs(Creature c) throws Exception{
+	
+	// Depth-first search alternative to finding the next best move
+	public static Direction dfs(Creature c) throws Exception{
 		
-		// Random chance of choosing a random direction. TODO: Fix condition
-		if(Math.random() < 1.0/(c.getDNA()+5)){
+		// Random chance of choosing a random direction
+		if(Math.random() < 1.0 / (c.getDNA() + 5)){
 			return GameState.getRandomDirection();
 		}
 		
@@ -124,7 +129,6 @@ public static Direction dfs(Creature c) throws Exception{
 		}
 		// Can't find any DNA within depth radius
 		if(bestScore == 0.0){
-			System.out.println("NEVER SHOULD HAPPEN");
 			return GameState.getRandomDirection();
 		}
 		
@@ -133,6 +137,7 @@ public static Direction dfs(Creature c) throws Exception{
 		
 	}
 	
+	// Returns either 0 or the best consumable value of the node
 	public static double getBestDNAValue(Node n){
 		double bestScore = 0.0;
 		
@@ -168,6 +173,7 @@ public static Direction dfs(Creature c) throws Exception{
 		}
 	}
 	
+	// Get a random direction in the case that the creature can't compute the best move
 	public static Direction getRandomDirection(){
 		System.out.println("RANDOM DIRECTION CHOSEN");
 		int randInt = (int) (Math.random() * 4);
@@ -182,6 +188,22 @@ public static Direction dfs(Creature c) throws Exception{
 		default:
 			return Direction.DOWN;
 		}
+	}
+	
+	// Helper function to play a sound with the passed filename
+	public static synchronized void playSound(String filename){
+		new Thread(new Runnable(){
+			public void run(){
+				try {
+					InputStream in = new FileInputStream("assets/sounds/" + filename);
+					AudioStream audio = new AudioStream(in);
+					AudioPlayer.player.start(audio);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
 	}
 
 }

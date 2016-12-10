@@ -44,6 +44,7 @@ public class Creature implements Consumable{
 	
 	// Function to be called when the creature evolves
 	public void evolve(){
+		GameState.playSound("level_up.wav");
 		this.evolutionStage++;
 		
 		// If this creature has reached its maximum point of evolution, stop
