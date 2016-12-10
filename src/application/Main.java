@@ -68,7 +68,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root, width, height);
 			
 			Image darwinBackground = new Image("file:assets/png/background.png");
-			 BackgroundImage background = new BackgroundImage(darwinBackground, 
+			BackgroundImage background = new BackgroundImage(darwinBackground, 
 					 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, 
 					 new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
 			 root.setBackground(new Background(background));
