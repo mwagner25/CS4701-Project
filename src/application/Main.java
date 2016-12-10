@@ -89,8 +89,8 @@ public class Main extends Application {
 		// Create grid
 		Grid.screenWidth = width;
 		Grid.screenHeight = height;
-		int gridHeight = 15;
-		int gridWidth = 15;
+		int gridHeight = 10;
+		int gridWidth = 10;
 		
 		final Grid grid = new Grid(gridHeight, gridWidth);
 		
@@ -109,7 +109,7 @@ public class Main extends Application {
 		Grid.addConsumable(c, x, y);
 		GameState.allCreatures.add(c);
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.75), ev -> {
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.5), ev -> {
 			Direction nextStep;
 			 
 			try {
