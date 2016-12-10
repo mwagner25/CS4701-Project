@@ -98,11 +98,9 @@ public class GameState {
 		
 		Stack<Node> unvisited = new Stack<Node>();
 		unvisited.push(gameGrid.get(c.getX(), c.getY()));
-		double steps = 0.0;
 				
 		// Depth-first-search. Determine the tile to go to next
 		while(!unvisited.isEmpty()){
-			steps++;
 			Node current = unvisited.pop();
 			
 			Creature tileCreature = current.getValue().getCreature();
@@ -115,7 +113,7 @@ public class GameState {
 			if(!current.visited){
 				current.visited = true;
 				if(current.getValue().getConsumable() != null){
-					double score = current.getValue().getConsumable().getDNA() / steps;
+					double score = current.getValue().getConsumable().getDNA() / GameState.distance(c,current);
 					if(score > bestScore && !itself){
 						bestScore = score;
 						bestDNA = current.getValue().getConsumable();
@@ -188,6 +186,10 @@ public class GameState {
 		default:
 			return Direction.DOWN;
 		}
+	}
+	//Get number of steps from Creature to another Consumable
+	public static double distance(Creature n1, Node n2){
+		return Math.abs(n2.x - n1.getX()) + Math.abs(n2.y - n1.getY());
 	}
 	
 	// Helper function to play a sound with the passed filename

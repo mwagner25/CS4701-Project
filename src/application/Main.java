@@ -109,12 +109,12 @@ public class Main extends Application {
 		Grid.addConsumable(c, x, y);
 		GameState.allCreatures.add(c);
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.2), ev -> {
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.75), ev -> {
 			Direction nextStep;
 			 
 			try {
 				for(Creature creature : GameState.allCreatures){
-					nextStep = GameState.bfs(creature);
+					nextStep = GameState.dfs(creature);
 					creature.move(nextStep);
 				}
 				
@@ -123,7 +123,7 @@ public class Main extends Application {
 				if(Math.random() < 0.2){
 					addRandomCreatures(1);
 				}
-				if(Math.random() < 0.4){
+				if(Math.random() < 0.2){
 					addRandomDNA(1);
 				}
 			} catch (Exception e) {
