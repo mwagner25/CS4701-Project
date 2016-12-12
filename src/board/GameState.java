@@ -114,7 +114,8 @@ public class GameState {
 				current.visited = true;
 				if(current.getValue().getConsumable() != null){
 					double score = current.getValue().getConsumable().getDNA() / GameState.distance(c,current);
-					if(score > bestScore && !itself){
+					
+					if(score > bestScore && !itself && score < c.getDNA()){
 						bestScore = score;
 						bestDNA = current.getValue().getConsumable();
 					}
