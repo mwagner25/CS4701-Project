@@ -120,10 +120,10 @@ public class Main extends Application {
 				
 				Grid.refresh();
 				
-				if(Math.random() < 0.2){
+				if(Math.random() < 0.0){
 					addRandomCreatures(1);
 				}
-				if(Math.random() < 0.4){
+				if(Math.random() < 0.0){
 					addRandomDNA(1);
 				}
 			} catch (Exception e) {
