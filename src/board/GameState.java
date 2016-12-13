@@ -16,6 +16,8 @@ public class GameState {
 	
 	public static boolean gameOver = false;
 	public static ArrayList<Creature> allCreatures = new ArrayList<Creature>();
+	public static final double CREATURE_CREATION_THRESHOLD = 0.5;
+	public static final double DNA_CREATION_THRESHOLD = 0.95;
 	
 	// Generate graph representing grid
 	public static Graph generateGraph(Creature c){

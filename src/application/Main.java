@@ -89,13 +89,13 @@ public class Main extends Application {
 		// Create grid
 		Grid.screenWidth = width;
 		Grid.screenHeight = height;
-		int gridHeight = 10;
-		int gridWidth = 10;
+		int gridHeight = 20;
+		int gridWidth = 20;
 		
 		final Grid grid = new Grid(gridHeight, gridWidth);
 		
 		// Populate the grid
-		addRandomDNA(10);
+		addRandomDNA(20);
 		
 		Scene scene = new Scene(grid.getGrid(), width, height);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -106,10 +106,11 @@ public class Main extends Application {
 		int x = (int)(Math.random() * gridHeight);
 		int y = (int)(Math.random() * gridWidth);
 		final Creature c = getRandomCreature(x, y);
+		
 		Grid.addConsumable(c, x, y);
 		GameState.allCreatures.add(c);
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.5), ev -> {
+		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.7), ev -> {
 			Direction nextStep;
 			 
 			try {
@@ -120,11 +121,11 @@ public class Main extends Application {
 				
 				Grid.refresh();
 				
-				if(Math.random() < 0.0){
+				if(Math.random() < GameState.CREATURE_CREATION_THRESHOLD){
 					addRandomCreatures(1);
 				}
-				if(Math.random() < 0.0){
-					addRandomDNA(1);
+				if(Math.random() < GameState.DNA_CREATION_THRESHOLD){
+					addRandomDNA(3);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
